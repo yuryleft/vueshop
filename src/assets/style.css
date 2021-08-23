@@ -38,19 +38,19 @@
 .search-input{
     width: 40%;
 }
-.film-card{
+.flat-card{
     width: 70%;
     min-height: 200px;
     padding: 20px;
     display: flex;
     justify-content: space-between;
 }
-.film-card-img{
+.flat-card-img{
     padding: 10px;
     text-align: center;
     margin: auto;
 }
-.film-card-content{
+.flat-card-content{
     padding: 10px;
 }
 /*favorite*/
@@ -98,7 +98,7 @@
 .search-title{
     font-size: 15px;
 }
-.film-card-img{
+.flat-card-img{
    
    display: none; 
 }

@@ -3,7 +3,7 @@
         <div class="wrapper" @click="showViewed = false">
 
             <header class="header">
-                Поиск фильмов 
+                Поиск квартир
                 <a class="header-link" href="#favorite" >К избранному</a>
             </header>
             <div class="common-block">
@@ -17,15 +17,17 @@
                         <input type="text" id="search-input" style="color: #595959" v-model.trim="request" @focus="request=''">
                     </div>
        
-                    <div class="film-card" v-for="film in filteredFilms" :key="film.id" >
-                        <div class="film-card-img">
+                    <div class="flat-card" v-for="flat in filteredflats" :key="flat.id" >
+                        <div class="flat-card-img">
                          <img src="http://placehold.it/145" alt="">
                         </div>
-                        <div class="film-card-content">
-                            <p>{{film.title}}</p>
-                            <p>Дата выпуска: {{film.release_date}}</p>
-                            <p>Описание фильма: {{film.opening_crawl}}</p>
-                            <button class="btn waves-effect" @click.stop="addFilmToViewed(film)">Добавить в избранное</button>
+                        <div class="flat-card-content">
+                            <div>{{flat.attributes.title}}</div>
+                            <div>Кол-во комнат : {{flat.attributes.rooms}}</div>
+                            <div>Адресс : {{flat.attributes.address.city}}, {{flat.attributes.address.street}} {{flat.attributes.address.house}}, кв. {{flat.attributes.address.room}}</div>
+                            <div>Площадь : {{flat.attributes.area}} {{flat.attributes.unit}} </div>
+                            <div>Агент : {{flat.relationships.attributes.first_name}} {{flat.relationships.attributes.last_name}} {{flat.relationships.attributes.middle_name}} id: {{flat.relationships.id}} </div>
+                            <button class="btn waves-effect" @click.stop="addflatToViewed(flat)">Добавить в избранное</button>
                         </div>
                     </div>
 
@@ -42,11 +44,12 @@
 
                     <div class="favorite-menu" v-show=showViewed @click.stop="" >
                         
-                        <div class="favorite-menu-item" v-for="film in viewedFilms" :key="film.id">
+                        <div class="favorite-menu-item" v-for="flat in viewedflats" :key="flat.id">
 
-                         <div>{{film.title}}</div>
-                         <div>{{film.release_date}}</div>
-                        <button class="btn btn-small" @click.stop="deleteFilm(film)">Удалить</button>
+                         <div>{{flat.attributes.title}}</div>
+                          <div>Адресс : {{flat.attributes.address.city}}, {{flat.attributes.address.street}} {{flat.attributes.address.house}}, кв. {{flat.attributes.address.room}}</div>
+                            <div>Агент : {{flat.relationships.attributes.first_name}} {{flat.relationships.attributes.last_name}} {{flat.relationships.attributes.middle_name}} id: {{flat.relationships.id}} </div>
+                        <button class="btn btn-small" @click.stop="deleteflat(flat)">Удалить</button>
                         
                         </div>
                         
@@ -65,29 +68,29 @@
            data(){
                return {
                request:initheader,
-               films:[],
+               flats:[],
                showViewed:false,
-               viewedFilms:[]                   
+               viewedflats:[]                   
            }
            },
            computed:{
                header(){               
                 return this.request === "" || this.request === initheader ? "Ничего не ищем" : 'Идет поиск: '+ this.request;
                },
-               filteredFilms(){
+               filteredflats(){
                    if(this.request !== initheader){
-                   return this.films.filter( el => el.title.toLowerCase().includes(this.request.toLowerCase()) );
+                   return this.flats.filter( el => el.attributes.title.toLowerCase().includes(this.request.toLowerCase()) );
                    } else {
-                       return this.films;
+                       return this.flats;
                 }
 
                }
                },
 
                methods: {
-                addFilmToViewed(film){
-                    if ( !this.viewedFilms.find( el => el.title === film.title) ){
-                        this.viewedFilms.push(film);
+                addflatToViewed(flat){
+                    if ( !this.viewedflats.find( el => el.id === flat.id) ){
+                        this.viewedflats.push(flat);
                     }
                     this.showViewed = true;
 
@@ -95,14 +98,13 @@
                         this.showViewed = false;
                     }, 500)
                 },
-                deleteFilm({title}){
-                    this.viewedFilms = this.viewedFilms.filter( el => el.title !== title);
+                deleteflat({id}){
+                    this.viewedflats = this.viewedflats.filter( el => el.id !== id);
                 }
             },
            
            async mounted(){
-                this.films = await fetch("https://swapi.dev/api/films/").then(res => res.json()).then(data => data.results);
-                
+                this.flats = await fetch("https://raw.githubusercontent.com/FrolovArkadiy/task_for_middle/master/entities.json").then(res => res.json()).then(data => data.response);  
            }
         
         }
