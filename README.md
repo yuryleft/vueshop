@@ -1,5 +1,5 @@
 # vueshop
-
+При создании использовался только VueCLI
 ## Project setup
 ```
 npm install
